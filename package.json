@@ -1,0 +1,55 @@
+{
+  "name": "mcpm",
+  "version": "1.0.0",
+  "description": "MCP Configuration Manager - Manage MCP configs across AI Agents",
+  "type": "module",
+  "bin": {
+    "mcpm": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/cli.ts --format esm --clean",
+    "dev": "tsx src/cli.ts",
+    "prepublishOnly": "npm run build",
+    "format": "prettier --write 'src/**/*.ts'",
+    "format:check": "prettier --check 'src/**/*.ts'",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "cli",
+    "model-context-protocol",
+    "ai-agents",
+    "cursor",
+    "claude-code",
+    "antigravity",
+    "windsurf",
+    "vscode",
+    "codex",
+    "gemini-cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/user/mcpm.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "@iarna/toml": "^2.2.5",
+    "chalk": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "prettier": "^3.8.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
