@@ -1,6 +1,6 @@
 {
   "name": "@asteriskzuo/mcpcm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP Configuration Manager - Manage MCP configs across AI Agents",
   "type": "module",
   "bin": {
@@ -31,7 +31,12 @@
     "windsurf",
     "vscode",
     "codex",
-    "gemini-cli"
+    "trae",
+    "qwen-code",
+    "qoder",
+    "opencode",
+    "gemini-cli",
+    "skill"
   ],
   "repository": {
     "type": "git",
