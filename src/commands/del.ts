@@ -54,8 +54,8 @@ export async function runDel(serverNames: string[], options: DelOptions): Promis
   if (serverNames.length === 0) {
     error('No server name provided');
     console.log(`\n${DIM}Example:${RESET}`);
-    console.log(`  mcpm del my-server --agent cursor`);
-    console.log(`  mcpm del my-server --global`);
+    console.log(`  mcpcm del my-server --agent cursor`);
+    console.log(`  mcpcm del my-server --global`);
     return;
   }
 

@@ -11,9 +11,9 @@ export async function runFind(args: string[]): Promise<void> {
   const verbose = args.includes('--verbose') || args.includes('-v');
 
   if (!serverName) {
-    info('Usage: mcpm find <server-name>');
+    info('Usage: mcpcm find <server-name>');
     console.log(`\n${DIM}Example:${RESET}`);
-    console.log(`  mcpm find easeim`);
+    console.log(`  mcpcm find easeim`);
     return;
   }
 

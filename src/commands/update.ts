@@ -85,9 +85,9 @@ export async function runUpdate(input: string | null, options: UpdateOptions): P
     error('No MCP config provided. Use JSON string or --file option.');
     console.log(`\n${DIM}Example:${RESET}`);
     console.log(
-      `  mcpm update '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server.js"]}}}' --agent cursor`
+      `  mcpcm update '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server.js"]}}}' --agent cursor`
     );
-    console.log(`  mcpm update --file mcp.json --global`);
+    console.log(`  mcpcm update --file mcp.json --global`);
     return;
   }
 
@@ -257,6 +257,6 @@ export async function runUpdate(input: string | null, options: UpdateOptions): P
     for (const [serverName, agentNames] of allSkippedServers) {
       console.log(`  ${DIM}${serverName}${RESET} → ${agentNames.join(', ')}`);
     }
-    console.log(`\n${DIM}Use 'mcpm add' to add new servers.${RESET}`);
+    console.log(`\n${DIM}Use 'mcpcm add' to add new servers.${RESET}`);
   }
 }

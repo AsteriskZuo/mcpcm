@@ -1,10 +1,10 @@
 {
-  "name": "@asteriskzuo/mcpm",
+  "name": "@asteriskzuo/mcpcm",
   "version": "1.0.0",
   "description": "MCP Configuration Manager - Manage MCP configs across AI Agents",
   "type": "module",
   "bin": {
-    "mcpm": "./dist/cli.js"
+    "mcpcm": "./dist/cli.js"
   },
   "files": [
     "dist",
@@ -35,7 +35,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/asteriskzuo/mcpm.git"
+    "url": "git+https://github.com/asteriskzuo/mcpcm.git"
   },
   "author": "asteriskzuo <zuoyuhsywn@hotmail.com>",
   "license": "MIT",

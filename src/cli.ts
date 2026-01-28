@@ -27,12 +27,12 @@ function getVersion(): string {
 const VERSION = getVersion();
 
 const LOGO_LINES = [
-  '███╗   ███╗ ██████╗██████╗ ███╗   ███╗',
-  '████╗ ████║██╔════╝██╔══██╗████╗ ████║',
-  '██╔████╔██║██║     ██████╔╝██╔████╔██║',
-  '██║╚██╔╝██║██║     ██╔═══╝ ██║╚██╔╝██║',
-  '██║ ╚═╝ ██║╚██████╗██║     ██║ ╚═╝ ██║',
-  '╚═╝     ╚═╝ ╚═════╝╚═╝     ╚═╝     ╚═╝',
+  '███╗   ███╗ ██████╗██████╗  ██████╗███╗   ███╗',
+  '████╗ ████║██╔════╝██╔══██╗██╔════╝████╗ ████║',
+  '██╔████╔██║██║     ██████╔╝██║     ██╔████╔██║',
+  '██║╚██╔╝██║██║     ██╔═══╝ ██║     ██║╚██╔╝██║',
+  '██║ ╚═╝ ██║╚██████╗██║     ╚██████╗██║ ╚═╝ ██║',
+  '╚═╝     ╚═╝ ╚═════╝╚═╝      ╚═════╝╚═╝     ╚═╝',
 ];
 
 const GRAYS = [
@@ -54,19 +54,21 @@ function showLogo(): void {
 function showBanner(): void {
   showLogo();
   console.log();
-  console.log(`${DIM}MCP Configuration Manager - Manage MCP across AI Agents${RESET}`);
-  console.log();
-  console.log(`  ${DIM}$${RESET} ${TEXT}mcpm add${RESET}     ${DIM}Add MCP server config${RESET}`);
   console.log(
-    `  ${DIM}$${RESET} ${TEXT}mcpm del${RESET}     ${DIM}Delete MCP server config${RESET}`
-  );
-  console.log(`  ${DIM}$${RESET} ${TEXT}mcpm list${RESET}    ${DIM}List all MCP configs${RESET}`);
-  console.log(`  ${DIM}$${RESET} ${TEXT}mcpm find${RESET}    ${DIM}Find MCP server${RESET}`);
-  console.log(
-    `  ${DIM}$${RESET} ${TEXT}mcpm sync${RESET}    ${DIM}Sync configs between agents${RESET}`
+    `${DIM}MCP Configuration Manager - Manage MCP server configuration across AI Agents${RESET}`
   );
   console.log();
-  console.log(`${DIM}Run${RESET} mcpm --help ${DIM}for more info${RESET}`);
+  console.log(`  ${DIM}$${RESET} ${TEXT}mcpcm add${RESET}     ${DIM}Add MCP server config${RESET}`);
+  console.log(
+    `  ${DIM}$${RESET} ${TEXT}mcpcm del${RESET}     ${DIM}Delete MCP server config${RESET}`
+  );
+  console.log(`  ${DIM}$${RESET} ${TEXT}mcpcm list${RESET}    ${DIM}List all MCP configs${RESET}`);
+  console.log(`  ${DIM}$${RESET} ${TEXT}mcpcm find${RESET}    ${DIM}Find MCP server${RESET}`);
+  console.log(
+    `  ${DIM}$${RESET} ${TEXT}mcpcm sync${RESET}    ${DIM}Sync configs between agents${RESET}`
+  );
+  console.log();
+  console.log(`${DIM}Run${RESET} mcpcm --help ${DIM}for more info${RESET}`);
   console.log();
 }
 
@@ -74,7 +76,7 @@ function showHelp(): void {
   const agentList = getAllAgentTypes().join(', ');
 
   console.log(`
-${BOLD}Usage:${RESET} mcpm <command> [options]
+${BOLD}Usage:${RESET} mcpcm <command> [options]
 
 ${BOLD}Commands:${RESET}
   add <json>          Add MCP server config from JSON string
@@ -108,13 +110,13 @@ ${BOLD}Supported Agents:${RESET}
   ${DIM}${agentList}${RESET}
 
 ${BOLD}Examples:${RESET}
-  ${DIM}$${RESET} mcpm add '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server"]}}}' --agent cursor
-  ${DIM}$${RESET} mcpm add --file mcp.json --global
-  ${DIM}$${RESET} mcpm del my-server --agent cursor
-  ${DIM}$${RESET} mcpm list --global
-  ${DIM}$${RESET} mcpm find my-server
-  ${DIM}$${RESET} mcpm sync --from cursor --to antigravity claude-code
-  ${DIM}$${RESET} mcpm sync --from cursor --to-all
+  ${DIM}$${RESET} mcpcm add '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server"]}}}' --agent cursor
+  ${DIM}$${RESET} mcpcm add --file mcp.json --global
+  ${DIM}$${RESET} mcpcm del my-server --agent cursor
+  ${DIM}$${RESET} mcpcm list --global
+  ${DIM}$${RESET} mcpcm find my-server
+  ${DIM}$${RESET} mcpcm sync --from cursor --to antigravity claude-code
+  ${DIM}$${RESET} mcpcm sync --from cursor --to-all
 `);
 }
 
@@ -192,7 +194,7 @@ async function main(): Promise<void> {
       break;
     default:
       console.log(`Unknown command: ${command}`);
-      console.log(`Run ${BOLD}mcpm --help${RESET} for usage.`);
+      console.log(`Run ${BOLD}mcpcm --help${RESET} for usage.`);
   }
 }
 

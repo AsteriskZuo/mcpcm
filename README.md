@@ -1,4 +1,4 @@
-# mcpm
+# mcpcm
 
 MCP Configuration Manager - Manage MCP configurations across AI Agents.
 
@@ -12,35 +12,35 @@ Supports **Cursor**, **Claude Code**, **Antigravity**, **Windsurf**, **VS Code**
 
 ```bash
 # Use directly with npx (no install required)
-npx mcpm --help
+npx mcpcm --help
 
 # Or install globally
-npm install -g @asteriskzuo/mcpm
+npm install -g @asteriskzuo/mcpcm
 ```
 
 ## Quick Start
 
 ```bash
 # Add MCP server to specific agent
-npx mcpm add '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server"]}}}' --agent cursor
+npx mcpcm add '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server"]}}}' --agent cursor
 
 # Add from file to all installed agents
-npx mcpm add --file mcp.json --global
+npx mcpcm add --file mcp.json --global
 
 # List all configured MCP servers
-npx mcpm list
+npx mcpcm list
 ```
 
 ## Commands
 
-| Command       | Description                                          |
-| ------------- | ---------------------------------------------------- |
-| `mcpm add`    | Add **new** MCP servers (skips existing)             |
-| `mcpm update` | Update **existing** MCP servers (skips non-existing) |
-| `mcpm del`    | Delete MCP servers (skips non-existing)              |
-| `mcpm list`   | List all MCP configurations                          |
-| `mcpm find`   | Find where an MCP server is configured               |
-| `mcpm sync`   | Full sync from one agent to others (overwrites)      |
+| Command        | Description                                          |
+| -------------- | ---------------------------------------------------- |
+| `mcpcm add`    | Add **new** MCP servers (skips existing)             |
+| `mcpcm update` | Update **existing** MCP servers (skips non-existing) |
+| `mcpcm del`    | Delete MCP servers (skips non-existing)              |
+| `mcpcm list`   | List all MCP configurations                          |
+| `mcpcm find`   | Find where an MCP server is configured               |
+| `mcpcm sync`   | Full sync from one agent to others (overwrites)      |
 
 ## Common Options
 
@@ -63,18 +63,18 @@ Add **new** MCP servers to agent configurations.
 
 ```bash
 # From JSON string
-npx mcpm add '{"mcpServers":{"easeim":{"command":"node","args":["/path/to/index.js"]}}}' --agent cursor
+npx mcpcm add '{"mcpServers":{"easeim":{"command":"node","args":["/path/to/index.js"]}}}' --agent cursor
 
 # From file to all installed agents
-npx mcpm add --file mcp.json --global
+npx mcpcm add --file mcp.json --global
 
 # To current project
-npx mcpm add --file mcp.json --workspace
+npx mcpcm add --file mcp.json --workspace
 ```
 
 > [!NOTE]
 > If a server already exists, it will be **skipped** (not overwritten).
-> Use `mcpm update` to modify existing servers.
+> Use `mcpcm update` to modify existing servers.
 
 ## Update Command
 
@@ -82,15 +82,15 @@ Update existing MCP server configurations.
 
 ```bash
 # Update specific server in an agent
-npx mcpm update '{"mcpServers":{"my-server":{"args":["/new/path"]}}}' --agent cursor
+npx mcpcm update '{"mcpServers":{"my-server":{"args":["/new/path"]}}}' --agent cursor
 
 # Update from file
-npx mcpm update --file mcp.json --global
+npx mcpcm update --file mcp.json --global
 ```
 
 > [!NOTE]
 > Only **existing** servers will be updated. Non-existing servers are skipped.
-> Use `mcpm add` to add new servers.
+> Use `mcpcm add` to add new servers.
 
 ## Delete Command
 
@@ -98,13 +98,13 @@ Delete MCP servers from configurations.
 
 ```bash
 # From specific agent
-npx mcpm del my-server --agent cursor
+npx mcpcm del my-server --agent cursor
 
 # From all agents
-npx mcpm del my-server --global
+npx mcpcm del my-server --global
 
 # From project configs
-npx mcpm del my-server --workspace
+npx mcpcm del my-server --workspace
 ```
 
 > [!NOTE]
@@ -116,16 +116,16 @@ List all configured MCP servers.
 
 ```bash
 # All configs
-npx mcpm list
+npx mcpcm list
 
 # Specific agent
-npx mcpm list --agent cursor
+npx mcpcm list --agent cursor
 
 # Global configs only
-npx mcpm list --global
+npx mcpcm list --global
 
 # Project configs only
-npx mcpm list --workspace
+npx mcpcm list --workspace
 ```
 
 ## Find Command
@@ -133,7 +133,7 @@ npx mcpm list --workspace
 Search for an MCP server across all configurations.
 
 ```bash
-npx mcpm find easeim
+npx mcpcm find easeim
 
 # Output:
 # ✓ easeim found in:
@@ -147,10 +147,10 @@ Synchronize MCP configurations from one agent to others.
 
 ```bash
 # Sync to specific agents
-npx mcpm sync --from cursor --to antigravity claude-code
+npx mcpcm sync --from cursor --to antigravity claude-code
 
 # Sync to all installed agents
-npx mcpm sync --from cursor --to-all
+npx mcpcm sync --from cursor --to-all
 ```
 
 > [!IMPORTANT]
@@ -227,10 +227,10 @@ Then:
 
 ```bash
 # Add to all installed agents
-npx mcpm add --file mcp.json --global
+npx mcpcm add --file mcp.json --global
 
 # Or add to current project for team sharing
-npx mcpm add --file mcp.json --workspace
+npx mcpcm add --file mcp.json --workspace
 ```
 
 ### Sync development environment
@@ -238,7 +238,7 @@ npx mcpm add --file mcp.json --workspace
 ```bash
 # Set up Cursor with all your MCP servers
 # Then sync to other agents
-npx mcpm sync --from cursor --to-all
+npx mcpcm sync --from cursor --to-all
 ```
 
 ## Configuration Priority
@@ -251,7 +251,7 @@ Project configs take precedence over global configs.
 
 ## Recommended .gitignore
 
-If you're using `mcpm` in a project, add the following to your `.gitignore` to exclude agent config directories created during testing:
+If you're using `mcpcm` in a project, add the following to your `.gitignore` to exclude agent config directories created during testing:
 
 ```gitignore
 # MCP Configuration files (created during testing)
@@ -293,7 +293,7 @@ You can add or modify AI Agent configurations by editing the `agents` object in 
 ```bash
 # Find the global installation path
 npm root -g
-# Then edit: <npm_root>/@asteriskzuo/mcpm/dist/cli.js
+# Then edit: <npm_root>/@asteriskzuo/mcpcm/dist/cli.js
 ```
 
 ### Modify the `agents` Object
@@ -336,7 +336,7 @@ var agents = {
 > Reinstalling or updating the package will overwrite your changes.
 
 > [!TIP]
-> If you find this method cumbersome, consider [submitting a PR](https://github.com/AsteriskZuo/mcpm/pulls) to add official support for your agent!
+> If you find this method cumbersome, consider [submitting a PR](https://github.com/AsteriskZuo/mcpcm/pulls) to add official support for your agent!
 
 ## License
 

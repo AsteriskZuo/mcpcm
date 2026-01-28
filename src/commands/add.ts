@@ -79,9 +79,9 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
     error('No MCP config provided. Use JSON string or --file option.');
     console.log(`\n${DIM}Example:${RESET}`);
     console.log(
-      `  mcpm add '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server.js"]}}}' --agent cursor`
+      `  mcpcm add '{"mcpServers":{"my-server":{"command":"node","args":["/path/to/server.js"]}}}' --agent cursor`
     );
-    console.log(`  mcpm add --file mcp.json --global`);
+    console.log(`  mcpcm add --file mcp.json --global`);
     return;
   }
 
@@ -251,6 +251,6 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
     for (const [serverName, agentNames] of allSkippedServers) {
       console.log(`  ${DIM}${serverName}${RESET} → ${agentNames.join(', ')}`);
     }
-    console.log(`\n${DIM}Use 'mcpm update' to modify existing servers.${RESET}`);
+    console.log(`\n${DIM}Use 'mcpcm update' to modify existing servers.${RESET}`);
   }
 }

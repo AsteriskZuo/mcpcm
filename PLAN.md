@@ -9,7 +9,7 @@
 
 ## 命令名称
 
-mcpm: 是 Model Context Protocol Manager 的缩写。
+mcpcm: 是 Model Context Protocol Configuration Manager 的缩写。
 
 ## 术语表
 
@@ -130,7 +130,7 @@ add 命令 支持 --replace 命令，默认是 merge 模式
 
 ```bash
 # 直接输入 JSON 字符串的方式添加到指定 Agent
-npx mcpm add '{
+npx mcpcm add '{
   "mcpServers": {
     "easeim": {
       "command": "node",
@@ -140,20 +140,20 @@ npx mcpm add '{
 }' --agent claude-code cursor
 
 # 指定配置文件的方式添加到全局
-npx mcpm add --file "mcp.json" --global
+npx mcpcm add --file "mcp.json" --global
 
 # 添加到当前项目（workspace）
-npx mcpm add --file "mcp.json" --workspace
+npx mcpcm add --file "mcp.json" --workspace
 
 # 使用 --replace 模式（替换而非合并）
-npx mcpm add --file "mcp.json" --agent cursor --replace
+npx mcpcm add --file "mcp.json" --agent cursor --replace
 ```
 
 ### update 命令
 
 ```bash
 # 更新指定 MCP Server 的配置
-npx mcpm update '{
+npx mcpcm update '{
   "mcpServers": {
     "easeim": {
       "command": "node",
@@ -163,27 +163,27 @@ npx mcpm update '{
 }' --agent claude-code
 
 # 从文件更新配置
-npx mcpm update --file "mcp.json" --global
+npx mcpcm update --file "mcp.json" --global
 ```
 
 ### del 命令
 
 ```bash
 # 从指定 Agent 删除某个 MCP Server
-npx mcpm del easeim --agent cursor
+npx mcpcm del easeim --agent cursor
 
 # 从所有 Agent 删除某个 MCP Server
-npx mcpm del easeim --global
+npx mcpcm del easeim --global
 
 # 从当前项目配置中删除
-npx mcpm del easeim --workspace
+npx mcpcm del easeim --workspace
 ```
 
 ### find 命令
 
 ```bash
 # 查找某个 MCP Server 是否存在
-npx mcpm find easeim
+npx mcpcm find easeim
 
 # 输出示例:
 # ✓ easeim found in:
@@ -195,46 +195,46 @@ npx mcpm find easeim
 
 ```bash
 # 列出所有已安装 Agent 的 MCP 配置
-npx mcpm list
+npx mcpcm list
 
 # 列出指定 Agent 的配置
-npx mcpm list --agent cursor
+npx mcpcm list --agent cursor
 
 # 列出全局配置
-npx mcpm list --global
+npx mcpcm list --global
 
 # 列出当前项目的配置
-npx mcpm list --workspace
+npx mcpcm list --workspace
 
 # 详细输出模式
-npx mcpm list --verbose
+npx mcpcm list --verbose
 ```
 
 ### sync 命令
 
 ```bash
 # 同步一个 Agent 的配置到另一个
-npx mcpm sync --from cursor --to antigravity
+npx mcpcm sync --from cursor --to antigravity
 
 # 同步到多个 Agent
-npx mcpm sync --from cursor --to antigravity claude-code windsurf
+npx mcpcm sync --from cursor --to antigravity claude-code windsurf
 
 # 同步到所有已安装的 Agent
-npx mcpm sync --from cursor --to-all
+npx mcpcm sync --from cursor --to-all
 ```
 
 ### 其他选项
 
 ```bash
 # 查看帮助
-npx mcpm --help
-npx mcpm add --help
+npx mcpcm --help
+npx mcpcm add --help
 
 # 查看版本
-npx mcpm --version
+npx mcpcm --version
 
 # 详细输出模式（调试用）
-npx mcpm list --verbose
+npx mcpcm list --verbose
 ```
 
 ## 配置优先级
