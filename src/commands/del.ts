@@ -81,6 +81,7 @@ export async function runDel(serverNames: string[], options: DelOptions): Promis
 
   let successCount = 0;
   let failCount = 0;
+  const allNotFoundServers: Map<string, string[]> = new Map(); // server name -> agent names
 
   for (const agentType of targetAgents) {
     const agent = agents[agentType];
@@ -91,7 +92,26 @@ export async function runDel(serverNames: string[], options: DelOptions): Promis
       const existing = readProjectConfig(agentType, process.cwd(), options.verbose);
       if (!existing.config) continue;
 
-      const updated = removeServersFromConfig(existing.config, serverNames);
+      const existingServers = Object.keys(existing.config.mcpServers || {});
+
+      // Find which servers actually exist
+      const toDelete = serverNames.filter((s) => existingServers.includes(s));
+      const notFound = serverNames.filter((s) => !existingServers.includes(s));
+
+      // Track not found servers
+      for (const nf of notFound) {
+        const agents = allNotFoundServers.get(nf) || [];
+        agents.push(agent.displayName);
+        allNotFoundServers.set(nf, agents);
+      }
+
+      // Skip if no servers to delete
+      if (toDelete.length === 0) {
+        warn(`${agent.displayName}: no matching servers found (skipped)`);
+        continue;
+      }
+
+      const updated = removeServersFromConfig(existing.config, toDelete);
       const result = writeProjectConfig(
         agentType,
         updated,
@@ -101,7 +121,13 @@ export async function runDel(serverNames: string[], options: DelOptions): Promis
       );
 
       if (result.success) {
-        success(`${agent.displayName}: removed from ${result.path}`);
+        if (notFound.length > 0) {
+          success(
+            `${agent.displayName}: deleted ${toDelete.join(', ')} (not found: ${notFound.join(', ')})`
+          );
+        } else {
+          success(`${agent.displayName}: deleted ${toDelete.join(', ')}`);
+        }
         successCount++;
       } else {
         error(`${agent.displayName}: ${result.error}`);
@@ -113,11 +139,36 @@ export async function runDel(serverNames: string[], options: DelOptions): Promis
       const existing = readGlobalConfig(agentType, options.verbose);
       if (!existing.config) continue;
 
-      const updated = removeServersFromConfig(existing.config, serverNames);
+      const existingServers = Object.keys(existing.config.mcpServers || {});
+
+      // Find which servers actually exist
+      const toDelete = serverNames.filter((s) => existingServers.includes(s));
+      const notFound = serverNames.filter((s) => !existingServers.includes(s));
+
+      // Track not found servers
+      for (const nf of notFound) {
+        const agents = allNotFoundServers.get(nf) || [];
+        agents.push(agent.displayName);
+        allNotFoundServers.set(nf, agents);
+      }
+
+      // Skip if no servers to delete
+      if (toDelete.length === 0) {
+        warn(`${agent.displayName}: no matching servers found (skipped)`);
+        continue;
+      }
+
+      const updated = removeServersFromConfig(existing.config, toDelete);
       const result = writeGlobalConfig(agentType, updated, existing.rawContent, options.verbose);
 
       if (result.success) {
-        success(`${agent.displayName}: removed from ${result.path}`);
+        if (notFound.length > 0) {
+          success(
+            `${agent.displayName}: deleted ${toDelete.join(', ')} (not found: ${notFound.join(', ')})`
+          );
+        } else {
+          success(`${agent.displayName}: deleted ${toDelete.join(', ')}`);
+        }
         successCount++;
       } else {
         error(`${agent.displayName}: ${result.error}`);
@@ -132,5 +183,14 @@ export async function runDel(serverNames: string[], options: DelOptions): Promis
   }
   if (failCount > 0) {
     error(`Failed for ${failCount} agent(s)`);
+  }
+
+  // Show summary of not found servers
+  if (allNotFoundServers.size > 0) {
+    console.log();
+    warn(`${allNotFoundServers.size} server(s) not found:`);
+    for (const [serverName, agentNames] of allNotFoundServers) {
+      console.log(`  ${DIM}${serverName}${RESET} → ${agentNames.join(', ')}`);
+    }
   }
 }

@@ -33,51 +33,68 @@ npx mcpm list
 
 ## Commands
 
-| Command       | Description                            |
-| ------------- | -------------------------------------- |
-| `mcpm add`    | Add MCP server configuration           |
-| `mcpm update` | Update MCP server configuration        |
-| `mcpm del`    | Delete MCP server by name              |
-| `mcpm list`   | List all MCP configurations            |
-| `mcpm find`   | Find where an MCP server is configured |
-| `mcpm sync`   | Sync configs from one agent to others  |
+| Command       | Description                                          |
+| ------------- | ---------------------------------------------------- |
+| `mcpm add`    | Add **new** MCP servers (skips existing)             |
+| `mcpm update` | Update **existing** MCP servers (skips non-existing) |
+| `mcpm del`    | Delete MCP servers (skips non-existing)              |
+| `mcpm list`   | List all MCP configurations                          |
+| `mcpm find`   | Find where an MCP server is configured               |
+| `mcpm sync`   | Full sync from one agent to others (overwrites)      |
+
+## Common Options
+
+These options are shared across multiple commands:
+
+| Option                    | Applies to             | Description                                     |
+| ------------------------- | ---------------------- | ----------------------------------------------- |
+| `-a, --agent <agents...>` | add, update, del, list | Target specific agent(s)                        |
+| `-g, --global`            | add, update, del, list | Apply to global configs of all installed agents |
+| `-w, --workspace`         | add, update, del, list | Apply to project-level configs                  |
+| `-f, --file <path>`       | add, update            | Read config from file instead of JSON string    |
+| `-v, --verbose`           | all                    | Show detailed output                            |
+
+> [!TIP]
+> You must specify one of `--agent`, `--global`, or `--workspace` to indicate where to apply the operation.
 
 ## Add Command
 
-Add MCP server configuration to agents.
+Add **new** MCP servers to agent configurations.
 
 ```bash
 # From JSON string
 npx mcpm add '{"mcpServers":{"easeim":{"command":"node","args":["/path/to/index.js"]}}}' --agent cursor
 
-# From file
+# From file to all installed agents
 npx mcpm add --file mcp.json --global
 
 # To current project
 npx mcpm add --file mcp.json --workspace
-
-# Replace mode (instead of merge)
-npx mcpm add --file mcp.json --agent cursor --replace
 ```
 
-### Options
+> [!NOTE]
+> If a server already exists, it will be **skipped** (not overwritten).
+> Use `mcpm update` to modify existing servers.
 
-| Option                    | Description                                  |
-| ------------------------- | -------------------------------------------- |
-| `-a, --agent <agents...>` | Target specific agent(s)                     |
-| `-g, --global`            | Add to all installed agents (global configs) |
-| `-w, --workspace`         | Add to project-level configs                 |
-| `-f, --file <path>`       | Read config from file                        |
-| `-r, --replace`           | Replace instead of merge                     |
-| `-v, --verbose`           | Show detailed output                         |
+## Update Command
+
+Update existing MCP server configurations.
+
+```bash
+# Update specific server in an agent
+npx mcpm update '{"mcpServers":{"my-server":{"args":["/new/path"]}}}' --agent cursor
+
+# Update from file
+npx mcpm update --file mcp.json --global
+```
 
 > [!NOTE]
-> If a server already exists in the target agent's config, it will be **skipped** (not overwritten).
-> Use `mcpm update` to modify existing servers.
+> Only **existing** servers will be updated. Non-existing servers are skipped.
+> Use `mcpm add` to add new servers.
 
 ## Delete Command
 
-Delete MCP server from configurations.
+Delete MCP servers from configurations.
 
 ```bash
 # From specific agent
@@ -89,6 +106,9 @@ npx mcpm del my-server --global
 # From project configs
 npx mcpm del my-server --workspace
 ```
+
+> [!NOTE]
+> Only **existing** servers will be deleted. Non-existing servers are skipped with a warning.
 
 ## List Command
 
@@ -132,6 +152,10 @@ npx mcpm sync --from cursor --to antigravity claude-code
 # Sync to all installed agents
 npx mcpm sync --from cursor --to-all
 ```
+
+> [!IMPORTANT]
+> Sync performs a **full synchronization**: existing servers are **overwritten**, and new servers are added.
+> This is different from `add` which skips existing servers.
 
 ## Supported Agents
 
