@@ -112,6 +112,7 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
   // Apply config to each agent
   let successCount = 0;
   let failCount = 0;
+  const allSkippedServers: Map<string, string[]> = new Map(); // server name -> agent names
 
   for (const agentType of targetAgents) {
     const agent = agents[agentType];
@@ -124,9 +125,36 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
       }
 
       const existing = readProjectConfig(agentType, process.cwd(), options.verbose);
+      const existingServers = Object.keys(existing.config?.mcpServers || {});
+      const incomingServers = Object.keys(mcpConfig.mcpServers);
+
+      // Find duplicates (servers that already exist)
+      const duplicates = incomingServers.filter((s) => existingServers.includes(s));
+      const newServers = incomingServers.filter((s) => !existingServers.includes(s));
+
+      // Track skipped servers
+      for (const dup of duplicates) {
+        const agents = allSkippedServers.get(dup) || [];
+        agents.push(agent.displayName);
+        allSkippedServers.set(dup, agents);
+      }
+
+      // Only add new servers
+      if (newServers.length === 0) {
+        warn(`${agent.displayName}: all servers already exist (skipped)`);
+        continue;
+      }
+
+      // Filter mcpConfig to only include new servers
+      const filteredConfig: McpConfig = {
+        mcpServers: Object.fromEntries(
+          Object.entries(mcpConfig.mcpServers).filter(([name]) => newServers.includes(name))
+        ),
+      };
+
       const merged = mergeMcpConfigs(
         existing.config || { mcpServers: {} },
-        mcpConfig,
+        filteredConfig,
         options.replace
       );
 
@@ -138,7 +166,13 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
         options.verbose
       );
       if (result.success) {
-        success(`${agent.displayName}: ${result.path}`);
+        if (duplicates.length > 0) {
+          success(
+            `${agent.displayName}: added ${newServers.join(', ')} (skipped: ${duplicates.join(', ')})`
+          );
+        } else {
+          success(`${agent.displayName}: ${result.path}`);
+        }
         successCount++;
       } else {
         error(`${agent.displayName}: ${result.error}`);
@@ -152,15 +186,48 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
       }
 
       const existing = readGlobalConfig(agentType, options.verbose);
+      const existingServers = Object.keys(existing.config?.mcpServers || {});
+      const incomingServers = Object.keys(mcpConfig.mcpServers);
+
+      // Find duplicates (servers that already exist)
+      const duplicates = incomingServers.filter((s) => existingServers.includes(s));
+      const newServers = incomingServers.filter((s) => !existingServers.includes(s));
+
+      // Track skipped servers
+      for (const dup of duplicates) {
+        const agents = allSkippedServers.get(dup) || [];
+        agents.push(agent.displayName);
+        allSkippedServers.set(dup, agents);
+      }
+
+      // Only add new servers
+      if (newServers.length === 0) {
+        warn(`${agent.displayName}: all servers already exist (skipped)`);
+        continue;
+      }
+
+      // Filter mcpConfig to only include new servers
+      const filteredConfig: McpConfig = {
+        mcpServers: Object.fromEntries(
+          Object.entries(mcpConfig.mcpServers).filter(([name]) => newServers.includes(name))
+        ),
+      };
+
       const merged = mergeMcpConfigs(
         existing.config || { mcpServers: {} },
-        mcpConfig,
+        filteredConfig,
         options.replace
       );
 
       const result = writeGlobalConfig(agentType, merged, existing.rawContent, options.verbose);
       if (result.success) {
-        success(`${agent.displayName}: ${result.path}`);
+        if (duplicates.length > 0) {
+          success(
+            `${agent.displayName}: added ${newServers.join(', ')} (skipped: ${duplicates.join(', ')})`
+          );
+        } else {
+          success(`${agent.displayName}: ${result.path}`);
+        }
         successCount++;
       } else {
         error(`${agent.displayName}: ${result.error}`);
@@ -175,5 +242,15 @@ export async function runAdd(input: string | null, options: AddOptions): Promise
   }
   if (failCount > 0) {
     error(`Failed for ${failCount} agent(s)`);
+  }
+
+  // Show summary of skipped servers
+  if (allSkippedServers.size > 0) {
+    console.log();
+    warn(`Skipped ${allSkippedServers.size} existing server(s):`);
+    for (const [serverName, agentNames] of allSkippedServers) {
+      console.log(`  ${DIM}${serverName}${RESET} → ${agentNames.join(', ')}`);
+    }
+    console.log(`\n${DIM}Use 'mcpm update' to modify existing servers.${RESET}`);
   }
 }

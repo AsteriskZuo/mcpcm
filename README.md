@@ -71,6 +71,10 @@ npx mcpm add --file mcp.json --agent cursor --replace
 | `-r, --replace`           | Replace instead of merge                     |
 | `-v, --verbose`           | Show detailed output                         |
 
+> [!NOTE]
+> If a server already exists in the target agent's config, it will be **skipped** (not overwritten).
+> Use `mcpm update` to modify existing servers.
+
 ## Delete Command
 
 Delete MCP server from configurations.
@@ -220,6 +224,22 @@ When agents have multiple config sources:
 **Project > Editor > Global**
 
 Project configs take precedence over global configs.
+
+## Recommended .gitignore
+
+If you're using `mcpm` in a project, add the following to your `.gitignore` to exclude agent config directories created during testing:
+
+```gitignore
+# MCP Configuration files (created during testing)
+.cursor/
+.mcp.json
+.gemini/
+.windsurf/
+.vscode/
+.codex/
+.qwen/
+.trae/
+```
 
 ## Troubleshooting
 
