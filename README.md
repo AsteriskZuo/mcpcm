@@ -1,6 +1,6 @@
 # mcpcm
 
-MCP Configuration Manager - Manage MCP configurations across AI Agents.
+MCP Configuration Manager - Manage MCP server configurations across AI Agents.
 
 <!-- agent-list:start -->
 
