@@ -350,3 +350,7 @@ var agents = {
 ## License
 
 MIT
+
+## References
+
+[skills](https://www.npmjs.com/package/skills)
