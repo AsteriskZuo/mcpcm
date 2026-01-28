@@ -1,5 +1,5 @@
 {
-  "name": "mcpm",
+  "name": "@asteriskzuo/mcpm",
   "version": "1.0.0",
   "description": "MCP Configuration Manager - Manage MCP configs across AI Agents",
   "type": "module",
@@ -33,9 +33,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/user/mcpm.git"
+    "url": "git+https://github.com/asteriskzuo/mcpm.git"
   },
-  "author": "",
+  "author": "asteriskzuo <zuoyuhsywn@hotmail.com>",
   "license": "MIT",
   "dependencies": {
     "@clack/prompts": "^0.11.0",
