@@ -240,6 +240,60 @@ The CLI auto-detects installed agents by checking for config directories. If non
 
 Ensure you have write access to the config directory.
 
+## Custom Agent Configuration
+
+You can add or modify AI Agent configurations by editing the `agents` object in the installed CLI file.
+
+### Locate the CLI File
+
+```bash
+# Find the global installation path
+npm root -g
+# Then edit: <npm_root>/@asteriskzuo/mcpm/dist/cli.js
+```
+
+### Modify the `agents` Object
+
+Open `dist/cli.js` and locate the `agents` object (around line 27). Add or modify agent entries:
+
+```javascript
+var agents = {
+  // ... existing agents ...
+
+  // Add your custom agent:
+  'my-agent': {
+    name: 'my-agent',
+    displayName: 'My Custom Agent',
+    projectConfigPath: '.my-agent/mcp.json', // or null if not supported
+    globalConfigPath: join(home, '.my-agent/mcp.json'),
+    configFormat: 'json', // 'json' or 'toml'
+    mcpConfigKey: 'mcpServers', // key in config file
+    detectInstalled: async () => existsSync(join(home, '.my-agent')),
+  },
+};
+```
+
+### Configuration Fields
+
+| Field               | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| `name`              | Agent identifier (used in `--agent` option)           |
+| `displayName`       | Human-readable name shown in output                   |
+| `projectConfigPath` | Relative path for project config (or `null`)          |
+| `globalConfigPath`  | Absolute path for global config (or `null`)           |
+| `configFormat`      | Config file format: `'json'` or `'toml'`              |
+| `mcpConfigKey`      | Key for MCP servers in config (e.g., `'mcpServers'`)  |
+| `detectInstalled`   | Async function returning `true` if agent is installed |
+
+> [!NOTE]
+> Changes take effect immediately. No rebuild required.
+
+> [!WARNING]
+> Reinstalling or updating the package will overwrite your changes.
+
+> [!TIP]
+> If you find this method cumbersome, consider [submitting a PR](https://github.com/AsteriskZuo/mcpm/pulls) to add official support for your agent!
+
 ## License
 
 MIT
