@@ -1,6 +1,6 @@
 {
-  "name": "@asteriskzuo/mcpcm",
-  "version": "1.0.2",
+  "name": "mcpcm",
+  "version": "1.0.3",
   "description": "MCP Configuration Manager - Manage MCP configs across AI Agents",
   "type": "module",
   "bin": {

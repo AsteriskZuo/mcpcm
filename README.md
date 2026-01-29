@@ -24,7 +24,7 @@ Supports **Cursor**, **Claude Code**, **Antigravity**, **Windsurf**, **VS Code**
 npx mcpcm --help
 
 # Or install globally
-npm install -g @asteriskzuo/mcpcm
+npm install -g mcpcm
 ```
 
 ## Quick Start
@@ -302,7 +302,7 @@ You can add or modify AI Agent configurations by editing the `agents` object in 
 ```bash
 # Find the global installation path
 npm root -g
-# Then edit: <npm_root>/@asteriskzuo/mcpcm/dist/cli.js
+# Then edit: <npm_root>/mcpcm/dist/cli.js
 ```
 
 ### Modify the `agents` Object
