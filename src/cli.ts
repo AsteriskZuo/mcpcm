@@ -68,7 +68,7 @@ function showBanner(): void {
     `  ${DIM}$${RESET} ${TEXT}mcpcm sync${RESET}    ${DIM}Sync configs between agents${RESET}`
   );
   console.log();
-  console.log(`${DIM}Run${RESET} mcpcm --help ${DIM}for more info${RESET}`);
+  console.log(`${DIM}Run${RESET} mcpcm --help ${DIM}for more info https://github.com/asteriskzuo/mcpcm${RESET}`);
   console.log();
 }
 
