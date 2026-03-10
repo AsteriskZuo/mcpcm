@@ -1,6 +1,6 @@
 {
   "name": "mcpcm",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "MCP Configuration Manager - Manage MCP configs across AI Agents",
   "type": "module",
   "bin": {
