@@ -82,8 +82,12 @@ npx mcpcm add --file mcp.json --workspace
 ```
 
 > [!NOTE]
-> If a server already exists, it will be **skipped** (not overwritten).
-> Use `mcpcm update` to modify existing servers.
+> If a server already exists, it will be **skipped** by default.
+> Use `--replace` to overwrite existing server entries in `add`, or use `mcpcm update`.
+
+> [!TIP]
+> If `MCPPCM_SERVER_URL` is configured, successful `add` operations (including `--replace`) are
+> reported to `POST /v1/ingest/mcp-servers`. Upload is best-effort and does not fail local writes.
 
 ## Update Command
 

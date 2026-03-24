@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { parseAddOptions } from '../commands/add.js';
+import {
+  parseAddOptions,
+  classifyAddWriteTargets,
+  buildAddTelemetryPayloads,
+} from '../commands/add.js';
+import type { AgentType } from '../types.js';
 import { parseDelOptions } from '../commands/del.js';
 import { parseListOptions } from '../commands/list.js';
 import { parseSyncOptions } from '../commands/sync.js';
@@ -84,6 +89,83 @@ describe('Command Parsers', () => {
       expect(options.agents).toEqual(['cursor', 'claude-code']);
       expect(options.replace).toBe(true);
       expect(options.verbose).toBe(true);
+    });
+  });
+
+  describe('add telemetry helpers', () => {
+    it('classifies duplicates as replaced when --replace is enabled', () => {
+      const result = classifyAddWriteTargets(['server-a', 'server-b'], ['server-a'], true);
+      expect(result.toWrite).toEqual(['server-a', 'server-b']);
+      expect(result.replaced).toEqual(['server-a']);
+      expect(result.added).toEqual(['server-b']);
+      expect(result.skipped).toEqual([]);
+    });
+
+    it('classifies duplicates as skipped when --replace is disabled', () => {
+      const result = classifyAddWriteTargets(['server-a', 'server-b'], ['server-a'], false);
+      expect(result.toWrite).toEqual(['server-b']);
+      expect(result.replaced).toEqual([]);
+      expect(result.added).toEqual(['server-b']);
+      expect(result.skipped).toEqual(['server-a']);
+    });
+
+    it('builds aggregated telemetry payloads with deterministic agent order', () => {
+      const successfulWrites = new Map<string, Set<AgentType>>([
+        ['server-b', new Set<AgentType>(['cursor'])],
+        ['server-a', new Set<AgentType>(['cursor', 'claude-code'])],
+      ]);
+
+      const payloads = buildAddTelemetryPayloads(
+        successfulWrites,
+        {
+          mcpServers: {
+            'server-a': { command: 'node', args: ['a.js'] },
+            'server-b': { command: 'node', args: ['b.js'] },
+          },
+        },
+        true
+      );
+
+      expect(payloads).toHaveLength(2);
+      expect(payloads[0]).toEqual({
+        mcp_name: 'server-a',
+        raw_config: '{"mcpServers":{"server-a":{"command":"node","args":["a.js"]}}}',
+        agents: 'claude-code,cursor',
+        event: 'install',
+        global: true,
+      });
+      expect(payloads[1]).toEqual({
+        mcp_name: 'server-b',
+        raw_config: '{"mcpServers":{"server-b":{"command":"node","args":["b.js"]}}}',
+        agents: 'cursor',
+        event: 'install',
+        global: true,
+      });
+    });
+
+    it('excludes unsuccessful targets from telemetry aggregation input', () => {
+      const successfulWrites = new Map<string, Set<AgentType>>([
+        ['server-a', new Set<AgentType>(['cursor'])],
+      ]);
+      const payloads = buildAddTelemetryPayloads(
+        successfulWrites,
+        {
+          mcpServers: {
+            'server-a': { command: 'node' },
+          },
+        },
+        false
+      );
+
+      expect(payloads).toEqual([
+        {
+          mcp_name: 'server-a',
+          raw_config: '{"mcpServers":{"server-a":{"command":"node"}}}',
+          agents: 'cursor',
+          event: 'install',
+          global: false,
+        },
+      ]);
     });
   });
 
