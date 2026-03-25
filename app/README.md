@@ -48,7 +48,7 @@ npx mcpcm list
 | `mcpcm update` | Update **existing** MCP servers (skips non-existing) |
 | `mcpcm del`    | Delete MCP servers (skips non-existing)              |
 | `mcpcm list`   | List all MCP configurations                          |
-| `mcpcm find`   | Find where an MCP server is configured               |
+| `mcpcm find`   | Find MCP servers locally or via online query         |
 | `mcpcm sync`   | Full sync from one agent to others (overwrites)      |
 
 ## Common Options
@@ -61,6 +61,7 @@ These options are shared across multiple commands:
 | `-g, --global`            | add, update, del, list | Apply to global configs of all installed agents |
 | `-w, --workspace`         | add, update, del, list | Apply to project-level configs                  |
 | `-f, --file <path>`       | add, update            | Read config from file instead of JSON string    |
+| `--online <keyword>`      | find                   | Query backend API (`mcpcm find --online <kw>`)  |
 | `-v, --verbose`           | all                    | Show detailed output                            |
 
 > [!TIP]
@@ -146,13 +147,21 @@ npx mcpcm list --workspace
 Search for an MCP server across all configurations.
 
 ```bash
+# Local search
 npx mcpcm find easeim
 
 # Output:
 # ✓ easeim found in:
 #   Cursor (global): ~/.cursor/mcp.json
 #   Claude Code (project): .mcp.json
+
+# Online search (strict syntax)
+npx mcpcm find --online easeim
 ```
+
+> [!IMPORTANT]
+> Online mode only supports `mcpcm find --online <keyword>`.
+> `mcpcm find <keyword> --online` is rejected with usage guidance.
 
 ## Sync Command
 

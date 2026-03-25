@@ -84,7 +84,8 @@ ${BOLD}Commands:${RESET}
   update              Update MCP server config (same as add)
   del <name>          Delete MCP server by name
   list                List all MCP configurations
-  find <name>         Find where an MCP server is configured
+  find <name>         Find MCP server in local agent configs
+  find --online <kw>  Find MCP server via backend query API
   sync                Sync configs from one agent to others
 
 ${BOLD}Target Options:${RESET}
@@ -101,6 +102,9 @@ ${BOLD}Sync Options:${RESET}
   --to <agent>        Target agent(s) to sync to
   --to-all            Sync to all installed agents
 
+${BOLD}Find Options:${RESET}
+  --online <keyword>  Query backend API only (strict: find --online <keyword>)
+
 ${BOLD}Other Options:${RESET}
   -v, --verbose       Show detailed output
   -h, --help          Show this help message
@@ -115,6 +119,7 @@ ${BOLD}Examples:${RESET}
   ${DIM}$${RESET} mcpcm del my-server --agent cursor
   ${DIM}$${RESET} mcpcm list --global
   ${DIM}$${RESET} mcpcm find my-server
+  ${DIM}$${RESET} mcpcm find --online my-server
   ${DIM}$${RESET} mcpcm sync --from cursor --to antigravity claude-code
   ${DIM}$${RESET} mcpcm sync --from cursor --to-all
 `);

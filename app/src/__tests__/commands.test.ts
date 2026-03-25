@@ -6,6 +6,7 @@ import {
 } from '../commands/add.js';
 import type { AgentType } from '../types.js';
 import { parseDelOptions } from '../commands/del.js';
+import { parseFindArgs } from '../commands/find.js';
 import { parseListOptions } from '../commands/list.js';
 import { parseSyncOptions } from '../commands/sync.js';
 
@@ -207,6 +208,43 @@ describe('Command Parsers', () => {
       expect(serverNames).toEqual(['server1', 'server2']);
       expect(options.agents).toEqual(['cursor', 'windsurf']);
       expect(options.verbose).toBe(true);
+    });
+  });
+
+  describe('parseFindArgs', () => {
+    it('parses local find mode', () => {
+      const parsed = parseFindArgs(['demo', '--verbose']);
+
+      expect('error' in parsed).toBe(false);
+      if ('error' in parsed) return;
+      expect(parsed.mode).toBe('local');
+      expect(parsed.keyword).toBe('demo');
+      expect(parsed.verbose).toBe(true);
+    });
+
+    it('parses strict online syntax', () => {
+      const parsed = parseFindArgs(['--online', 'demo']);
+
+      expect('error' in parsed).toBe(false);
+      if ('error' in parsed) return;
+      expect(parsed.mode).toBe('online');
+      expect(parsed.keyword).toBe('demo');
+    });
+
+    it('rejects trailing --online syntax', () => {
+      const parsed = parseFindArgs(['demo', '--online']);
+      expect('error' in parsed).toBe(true);
+      if ('error' in parsed) {
+        expect(parsed.error).toContain('Online mode only supports');
+      }
+    });
+
+    it('rejects missing online keyword', () => {
+      const parsed = parseFindArgs(['--online']);
+      expect('error' in parsed).toBe(true);
+      if ('error' in parsed) {
+        expect(parsed.error).toContain('Usage: mcpcm find --online <keyword>');
+      }
     });
   });
 
