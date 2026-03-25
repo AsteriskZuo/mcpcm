@@ -1,57 +1,66 @@
-# mcpcm-server (app) 使用说明
+# mcpcm-server (API)
 
-本文档说明如何在本项目中开发、运行和排错，并同步当前 v1 API 契约。
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-## 1. 目录与约定
+FastAPI backend for `mcpcm` ingest/query workflows.
 
-- Python 项目根目录是 `app/`
-- 依赖安装、服务启动、测试都在 `app/` 目录执行
-- 当前导入风格：**不使用** `from app.xxx import ...`，使用 `from core.xxx import ...`、`from routers.xxx import ...` 等
+## Overview
 
-## 2. 首次使用
+This service provides:
+- `POST /v1/ingest/mcp-servers`: ingest install events from CLI.
+- `GET /v1/query/mcp-servers`: query stored MCP records.
+- `GET /health`: health check endpoint.
 
-在 `app/` 下执行：
+Storage is SQLite (`MCPPCM_DATABASE_URL`) and schema is initialized at startup.
+
+## Project Layout
+
+- `main.py`: app factory, lifespan wiring, router mounting
+- `routers/`: HTTP endpoints (`health`, `ingest`, `query`)
+- `services/`: business logic
+- `repositories/`: data-access layer
+- `schemas/`: request/response models
+- `db/`: database connection and schema bootstrap
+- `tests/`: API, service, and integration tests
+
+## Prerequisites
+
+- Python `>=3.11`
+- `uv`
+
+## Quick Start
+
+Run all commands from `api/`:
+
+```bash
+cd api
+uv sync
+uv run uvicorn main:app --reload
+```
+
+Default local URL: `http://127.0.0.1:8000`
+
+## Common Commands
 
 ```bash
 uv sync
-```
-
-这会创建并使用虚拟环境：
-
-- `app/.venv`
-
-## 3. 常用命令（都在 app/ 下执行）
-
-```bash
-uv run fastapi dev --entrypoint main:app
 uv run uvicorn main:app --reload
 uv run pytest
 uv run ruff check .
 uv run ruff format .
 ```
 
-## 4. 环境变量配置（.env.example）
+## Environment Variables
 
-本项目的示例环境变量文件在 `app/.env.example`。
-
-建议先在 `app/` 目录创建本地环境文件：
+Create local env file from template:
 
 ```bash
+cd api
 cp .env.example .env
 ```
 
-默认内容：
-
-```env
-MCPPCM_HOST=127.0.0.1
-MCPPCM_PORT=8000
-MCPPCM_DATABASE_URL=sqlite:///./data/mcpcm.db
-MCPPCM_MAX_INGEST_PAYLOAD_BYTES=65536
-```
-
-注意：
-- 当前配置读取基于 `os.getenv`，不会自动加载 `.env` 文件。
-- 启动前可手动导出环境变量，例如：
+Current settings are read from `os.getenv` (the app does not auto-load `.env`).
+If needed, export variables before startup:
 
 ```bash
 set -a
@@ -60,14 +69,21 @@ set +a
 uv run uvicorn main:app --reload
 ```
 
-## 5. API 快速对照（v1）
+Supported variables:
 
-详细文档见 `app/docs/api-contract.md`，这里给最小可用示例。
+- `MCPPCM_HOST` (default: `127.0.0.1`)
+- `MCPPCM_PORT` (default: `8000`)
+- `MCPPCM_DATABASE_URL` (default: `sqlite:///./data/mcpcm.db`)
+- `MCPPCM_MAX_INGEST_PAYLOAD_BYTES` (default: `65536`)
 
-### 5.1 Ingest
+## API Contract (v1)
+
+Contract doc: `docs/api-contract.md`
+
+### Ingest
 
 - Endpoint: `POST /v1/ingest/mcp-servers`
-- 请求体：
+- Body example:
 
 ```json
 {
@@ -79,16 +95,15 @@ uv run uvicorn main:app --reload
 }
 ```
 
-说明：
+Notes:
+- `event` currently supports only `install`
+- repeated installs of the same `mcp_name` increment `install_count`
 
-- `event` 字段保留，当前仅支持 `install`
-- 同名 `mcp_name` 重复安装会累加 `install_count`
-
-### 5.2 Query
+### Query
 
 - Endpoint: `GET /v1/query/mcp-servers`
-- 可选查询参数：`mcp_name`（contains 匹配）
-- 响应：顶层数组，每项仅包含 `mcp_name`、`raw_config`、`install_count`
+- Optional query param: `mcp_name` (contains match)
+- Response example:
 
 ```json
 [
@@ -100,28 +115,24 @@ uv run uvicorn main:app --reload
 ]
 ```
 
-无匹配时返回：
+No-match response:
 
 ```json
 []
 ```
 
-## 6. VSCode 推荐配置
+## VS Code Setup
 
-### 6.1 打开仓库根目录时（`.../mcpcm-server`）
-
-建议在 `.vscode/settings.json`：
+If you open the monorepo root (`.../mcpcm`), recommend:
 
 ```json
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/app/.venv/bin/python",
-  "python.analysis.extraPaths": ["${workspaceFolder}/app"]
+  "python.defaultInterpreterPath": "${workspaceFolder}/api/.venv/bin/python",
+  "python.analysis.extraPaths": ["${workspaceFolder}/api"]
 }
 ```
 
-### 6.2 只打开 app 目录时（`.../mcpcm-server/app`）
-
-建议在 `app/.vscode/settings.json`：
+If you open only `api/`, recommend:
 
 ```json
 {
@@ -130,32 +141,22 @@ uv run uvicorn main:app --reload
 }
 ```
 
-## 7. 常见问题
+## Troubleshooting
 
-### Q1: `Import "fastapi" could not be resolved`
+### `Import "fastapi" could not be resolved`
 
-通常是解释器没选到 `app/.venv/bin/python`。
+Usually the Python interpreter is not set to `api/.venv/bin/python`.
 
-排查：
+### Commands fail due to missing dependencies
 
-1. VSCode `Python: Select Interpreter`
-2. 选 `.../mcpcm-server/app/.venv/bin/python`
-3. `Developer: Reload Window`
-
-### Q2: 在根目录打开和在 app 目录打开行为不一致
-
-这是 Python 路径解析差异导致。按上面的两套 `settings.json` 配置即可。
-
-### Q3: 运行命令报依赖问题
-
-确认当前工作目录是 `app/`，然后重跑：
+Ensure your working directory is `api/`, then run:
 
 ```bash
 uv sync
 ```
 
-## 8. 开发建议
+## Development Notes
 
-- 新代码保持当前导入风格（不带 `app.` 前缀）
-- 新测试放在 `app/tests/`
-- API 契约文档以 `app/docs/api-contract.md` 为准
+- Keep current import style (without `api.` prefix)
+- Add tests under `tests/`
+- Keep API behavior aligned with `docs/api-contract.md`
