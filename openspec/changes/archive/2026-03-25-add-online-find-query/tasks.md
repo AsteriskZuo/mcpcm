@@ -1,6 +1,6 @@
 ## 1. Find Online Mode Parsing
 
-- [x] 1.1 Refactor `app/src/commands/find.ts` argument parsing to recognize strict online syntax `mcpcm find --online <keyword>`.
+- [x] 1.1 Refactor `cli/src/commands/find.ts` argument parsing to recognize strict online syntax `mcpcm find --online <keyword>`.
 - [x] 1.2 Add explicit validation and user-facing guidance for invalid forms (`mcpcm find <keyword> --online`) and missing keyword (`mcpcm find --online`).
 - [x] 1.3 Keep existing local-search path unchanged when `--online` is not provided.
 
@@ -19,4 +19,4 @@
 ## 4. Documentation and Verification
 
 - [x] 4.1 Update CLI help/README usage examples to include `mcpcm find --online <keyword>` and online-mode constraints.
-- [x] 4.2 Run `npm test` and `npm run type-check` in `app/` after implementation to verify behavior.
+- [x] 4.2 Run `npm test` and `npm run type-check` in `cli/` after implementation to verify behavior.

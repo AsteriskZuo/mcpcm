@@ -1,7 +1,7 @@
 # App Module Guidelines
 
 ## Scope
-This guide applies only to files under `app/` (the TypeScript CLI module). For repository-wide conventions, refer to the root `AGENTS.md`.
+This guide applies only to files under `cli/` (the TypeScript CLI module). For repository-wide conventions, refer to the root `AGENTS.md`.
 
 ## Project Structure & Module Organization
 Source code lives in `src/` and is organized by responsibility:

@@ -10,7 +10,7 @@ The `add` command already contains nuanced behavior (skip existing entries by de
 - Add ingest telemetry reporting to `mcpcm add` based on actual successful local write outcomes.
 - Include `add --replace` replacement results in telemetry reporting.
 - Aggregate telemetry at server level (`mcp_name`) with deduplicated, stable `agents` list.
-- Introduce reusable `app/src/telemetry.ts` as the API integration module for current add and future find use.
+- Introduce reusable `cli/src/telemetry.ts` as the API integration module for current add and future find use.
 - Keep local config mutation as the primary success path even when telemetry upload fails.
 
 **Non-Goals:**
@@ -21,7 +21,7 @@ The `add` command already contains nuanced behavior (skip existing entries by de
 ## Decisions
 
 ### 1. Introduce a dedicated telemetry client module (`telemetry.ts`)
-- **Decision:** Create `app/src/telemetry.ts` to own backend HTTP concerns (endpoint URL resolution, request/response handling, timeout/error normalization).
+- **Decision:** Create `cli/src/telemetry.ts` to own backend HTTP concerns (endpoint URL resolution, request/response handling, timeout/error normalization).
 - **Rationale:** Keeps command handlers focused on command semantics and makes future `find` reuse straightforward.
 - **Alternatives considered:**
   - Inline fetch in `add.ts`: faster initially, but duplicates network logic and raises reuse cost for later `find` changes.
@@ -59,7 +59,7 @@ The `add` command already contains nuanced behavior (skip existing entries by de
 
 ## Migration Plan
 
-1. Add telemetry module and configuration surface in `app`.
+1. Add telemetry module and configuration surface in `cli`.
 2. Refactor `add` outcome tracking to distinguish added/replaced/skipped/failed per server+agent.
 3. Build aggregated ingest payloads from successful outcomes and submit best-effort telemetry.
 4. Add/adjust tests for replace behavior, aggregation, payload mapping, and failure isolation.

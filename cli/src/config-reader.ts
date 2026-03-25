@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
-import { parse as parseToml } from '@iarna/toml';
+import { parse as parseToml } from '@iarna/toml/index.js';
 import type { McpConfig, McpServerConfig, AgentType } from './types.js';
 import { getAgentConfig } from './agents.js';
 import { expandPath, safeParseJson, verbose as log } from './utils.js';

@@ -23,7 +23,7 @@
 
 ## Impact
 
-- Affected module: `app`.
-- Primary files: `app/src/commands/find.ts`, shared API client/helper area if extracted.
+- Affected module: `cli`.
+- Primary files: `cli/src/commands/find.ts`, shared API client/helper area if extracted.
 - API dependency: existing backend endpoint `GET /v1/query/mcp-servers` (no contract change required).
 - Testing impact: add parser/behavior coverage for strict `--online <keyword>` syntax and API response/error handling.

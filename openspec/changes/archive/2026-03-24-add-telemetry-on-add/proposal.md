@@ -4,10 +4,10 @@ The `mcpcm add` command currently updates local agent configs but does not repor
 
 ## What Changes
 
-- Update `app` `add` flow to emit ingest telemetry after successful local add actions.
+- Update `cli` `add` flow to emit ingest telemetry after successful local add actions.
 - Ensure `add --replace` replacement actions are also treated as install events and reported.
 - Aggregate telemetry by `mcp_name` per add run, with deduplicated and sorted agent identifiers.
-- Introduce a reusable `telemetry.ts` module in `app` to encapsulate backend API calls for current add usage and future find usage.
+- Introduce a reusable `telemetry.ts` module in `cli` to encapsulate backend API calls for current add usage and future find usage.
 - Keep local config write as the primary success path; telemetry failures are reported as warnings and do not fail add.
 
 ## Capabilities
@@ -20,8 +20,8 @@ The `mcpcm add` command currently updates local agent configs but does not repor
 
 ## Impact
 
-- Affected module: `app` (TypeScript CLI).
+- Affected module: `cli` (TypeScript CLI).
 - Affected command: `mcpcm add`.
 - New internal integration point: backend `POST /v1/ingest/mcp-servers`.
-- New app module expected: `app/src/telemetry.ts` (designed for reuse by future `find` work).
-- Testing impact: parser/command behavior tests and telemetry upload behavior tests in `app/src/__tests__/`.
+- New cli module expected: `cli/src/telemetry.ts` (designed for reuse by future `find` work).
+- Testing impact: parser/command behavior tests and telemetry upload behavior tests in `cli/src/__tests__/`.
